@@ -276,12 +276,30 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
           break;
       }
 
+      // Criar array de celeiros - manter o Chicken Coop e adicionar o novo
+      let updatedBarns: Barn[];
+      
+      if (selectedAnimal === 'chicken') {
+        // Se sorteou galinha, apenas atualizar o Chicken Coop existente
+        updatedBarns = prev.barns.map(barn => 
+          barn.type === 'chickenCoop' 
+            ? { ...barn, animals: [newAnimal] }
+            : barn
+        );
+      } else {
+        // Se sorteou outro animal, manter o Chicken Coop e adicionar o novo celeiro
+        updatedBarns = [
+          ...prev.barns, // Mantém o Chicken Coop existente
+          initialBarn    // Adiciona o novo celeiro
+        ];
+      }
+
       const newState = {
         ...prev,
         coins: initialCoins,
-        barns: [initialBarn],
+        barns: updatedBarns,
         isFirstTime: false,
-        coinsPerSecond: calculateCoinsPerSecond([initialBarn])
+        coinsPerSecond: calculateCoinsPerSecond(updatedBarns)
       };
 
       saveGame(newState);
