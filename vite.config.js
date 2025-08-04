@@ -61,6 +61,11 @@ export default defineConfig(({ mode }) => {
     build: {
       outDir: path.join(process.cwd(), 'dist/public'),
       emptyOutDir: true,
+      rollupOptions: {
+        output: {
+          manualChunks: undefined
+        }
+      }
     },
     clearScreen: false,
     server: {
