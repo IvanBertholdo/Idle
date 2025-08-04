@@ -6,6 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Barn } from '../types';
 import { useGame } from '../contexts/GameContext';
 import { animalTypes } from '../data/gameData';
+import { PiggyBank } from 'lucide-react';
 
 interface BarnAnimalsTabProps {
   barn: Barn;
@@ -48,7 +49,7 @@ export function BarnAnimalsTab({ barn }: BarnAnimalsTabProps) {
             <Card key={animalType.type} className="p-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <span className="text-2xl">🐔</span>
+                  <span className="text-2xl">{animalType.icon}</span>
                   <div>
                     <div className="font-medium">{animalType.name}</div>
                     <div className="text-sm text-gray-600">
@@ -59,7 +60,7 @@ export function BarnAnimalsTab({ barn }: BarnAnimalsTabProps) {
                 <div className="flex items-center gap-2">
                   <div className="text-right">
                     <div className="flex items-center gap-1">
-                      <span>🪙</span>
+                    <PiggyBank className="w-8 h-8 text-yellow-900" />
                       <span className="font-bold">{Math.floor(cost).toLocaleString()}</span>
                     </div>
                   </div>
@@ -81,60 +82,65 @@ export function BarnAnimalsTab({ barn }: BarnAnimalsTabProps) {
         <div className="space-y-2">
           <h3 className="text-lg font-semibold">Your Animals</h3>
           <div className="space-y-2 max-h-60 overflow-y-auto">
-            {barn.animals.map(animal => (
-              <Card key={animal.id} className="p-3">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <span className="text-xl">🐔</span>
-                    <div>
-                      {renamingAnimal === animal.id ? (
-                        <div className="space-y-1">
-                          <Input
-                            value={newName}
-                            onChange={(e) => setNewName(e.target.value)}
-                            placeholder="Enter new name"
-                            className="h-8"
-                          />
-                          <div className="flex gap-1">
-                            <Button
-                              size="sm"
-                              onClick={() => handleRename(animal.id)}
-                            >
-                              Save
-                            </Button>
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={() => setRenamingAnimal(null)}
-                            >
-                              Cancel
-                            </Button>
+            {barn.animals.map(animal => {
+              const animalData = animalTypes.find(at => at.type === animal.type);
+              const animalIcon = animalData?.icon || '🐔';
+              
+              return (
+                <Card key={animal.id} className="p-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <span className="text-xl">{animalIcon}</span>
+                      <div>
+                        {renamingAnimal === animal.id ? (
+                          <div className="space-y-1">
+                            <Input
+                              value={newName}
+                              onChange={(e) => setNewName(e.target.value)}
+                              placeholder="Enter new name"
+                              className="h-8"
+                            />
+                            <div className="flex gap-1">
+                              <Button
+                                size="sm"
+                                onClick={() => handleRename(animal.id)}
+                              >
+                                Save
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => setRenamingAnimal(null)}
+                              >
+                                Cancel
+                              </Button>
+                            </div>
                           </div>
-                        </div>
-                      ) : (
-                        <>
-                          <div className="font-medium">
-                            {animal.customName || animal.name}
-                          </div>
-                          <div className="text-sm text-gray-600">
-                            +{(animal.coinsPerSecond * (1 + barn.efficiencyBonus / 100)).toFixed(1)}/sec
-                          </div>
-                        </>
-                      )}
+                        ) : (
+                          <>
+                            <div className="font-medium">
+                              {animal.customName || animal.name}
+                            </div>
+                            <div className="text-sm text-gray-600">
+                              +{(animal.coinsPerSecond * (1 + barn.efficiencyBonus / 100)).toFixed(1)}/sec
+                            </div>
+                          </>
+                        )}
+                      </div>
                     </div>
+                    {renamingAnimal !== animal.id && (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => startRename(animal.id, animal.customName || animal.name)}
+                      >
+                        Rename
+                      </Button>
+                    )}
                   </div>
-                  {renamingAnimal !== animal.id && (
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => startRename(animal.id, animal.customName || animal.name)}
-                    >
-                      Rename
-                    </Button>
-                  )}
-                </div>
-              </Card>
-            ))}
+                </Card>
+              );
+            })}
           </div>
         </div>
       )}

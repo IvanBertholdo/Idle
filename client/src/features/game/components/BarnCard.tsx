@@ -3,16 +3,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Barn } from '../types';
 import { BarnDialog } from './BarnDialog';
+import { animalTypes, barnTypes } from '../data/gameData';
 
 interface BarnCardProps {
   barn: Barn;
 }
-
-const barnEmojis = {
-  chickenCoop: '🏠',
-  cowBarn: '🏚️',
-  pigPen: '🏘️'
-};
 
 export function BarnCard({ barn }: BarnCardProps) {
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
@@ -23,6 +18,9 @@ export function BarnCard({ barn }: BarnCardProps) {
     return sum + (baseRate * efficiencyMultiplier);
   }, 0);
 
+  const barnData = barnTypes[barn.type];
+  const barnIcon = barnData?.icon || '🏠';
+
   return (
     <>
       <Card className="hover:shadow-lg transition-shadow cursor-pointer bg-white border-2 border-green-200">
@@ -30,7 +28,7 @@ export function BarnCard({ barn }: BarnCardProps) {
           <CardTitle className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <span className="text-2xl">
-                {barnEmojis[barn.type as keyof typeof barnEmojis] || '🏠'}
+                {barnIcon}
               </span>
               <span className="text-lg">{barn.name}</span>
             </div>
@@ -54,12 +52,17 @@ export function BarnCard({ barn }: BarnCardProps) {
           )}
 
           <div className="space-y-1">
-            {barn.animals.slice(0, 3).map((animal, index) => (
-              <div key={animal.id} className="text-xs text-gray-500 flex items-center gap-1">
-                <span>🐔</span>
-                <span>{animal.customName || animal.name}</span>
-              </div>
-            ))}
+            {barn.animals.slice(0, 3).map((animal, index) => {
+              const animalData = animalTypes.find(at => at.type === animal.type);
+              const animalIcon = animalData?.icon || '🐔';
+              
+              return (
+                <div key={animal.id} className="text-xs text-gray-500 flex items-center gap-1">
+                  <span>{animalIcon}</span>
+                  <span>{animal.customName || animal.name}</span>
+                </div>
+              );
+            })}
             {barn.animals.length > 3 && (
               <div className="text-xs text-gray-400">
                 +{barn.animals.length - 3} more...

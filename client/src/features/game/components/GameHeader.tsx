@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
+import { PiggyBank } from 'lucide-react';
 
 interface GameHeaderProps {
   coins: number;
@@ -18,7 +19,7 @@ export function GameHeader({ coins, coinsPerSecond }: GameHeaderProps) {
             <Card className="bg-yellow-400 border-yellow-500">
               <CardContent className="p-3">
                 <div className="flex items-center gap-2">
-                  <span className="text-2xl">🪙</span>
+                  <PiggyBank className="w-8 h-8 text-yellow-900" />
                   <div className="text-right">
                     <div className="text-xl font-bold text-yellow-900">
                       {Math.floor(coins).toLocaleString()}

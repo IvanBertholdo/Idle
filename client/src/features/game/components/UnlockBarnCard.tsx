@@ -1,7 +1,9 @@
 import * as React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { PiggyBank } from 'lucide-react';
 import { useGame } from '../contexts/GameContext';
+import { barnTypes } from '../data/gameData';
 
 interface UnlockBarnCardProps {
   barnType: {
@@ -13,11 +15,6 @@ interface UnlockBarnCardProps {
   };
 }
 
-const barnEmojis = {
-  cowBarn: '🏚️',
-  pigPen: '🏘️'
-};
-
 export function UnlockBarnCard({ barnType }: UnlockBarnCardProps) {
   const { gameState, unlockBarn } = useGame();
 
@@ -26,13 +23,17 @@ export function UnlockBarnCard({ barnType }: UnlockBarnCardProps) {
   };
 
   const canAfford = gameState.coins >= barnType.baseCost;
+  
+  // Buscar o ícone do celeiro no gameData
+  const barnData = barnTypes[barnType.type];
+  const barnIcon = barnData?.icon || '🏠';
 
   return (
     <Card className="border-2 border-dashed border-gray-300 bg-gray-50">
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center gap-2 text-gray-600">
           <span className="text-2xl grayscale">
-            {barnEmojis[barnType.type as keyof typeof barnEmojis] || '🏠'}
+            {barnIcon}
           </span>
           <span className="text-lg">{barnType.name}</span>
         </CardTitle>
@@ -44,7 +45,7 @@ export function UnlockBarnCard({ barnType }: UnlockBarnCardProps) {
             Unlock this barn to house new types of animals!
           </p>
           <div className="flex items-center justify-center gap-1 mb-4">
-            <span className="text-lg">🪙</span>
+            <PiggyBank className="w-6 h-6 text-yellow-900" />
             <span className="font-bold text-lg">
               {barnType.baseCost.toLocaleString()}
             </span>

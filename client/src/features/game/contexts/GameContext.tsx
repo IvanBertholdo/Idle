@@ -242,18 +242,46 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
         coinsPerSecond: animalData.baseCoinsPerSecond
       };
 
-      const updatedBarns = prev.barns.map(barn => 
-        barn.type === 'chickenCoop'
-          ? { ...barn, animals: [newAnimal] }
-          : barn
-      );
+      // Determinar qual celeiro desbloquear baseado no animal
+      const barnTypeToUnlock = animalData.barnType;
+      
+      // Criar o celeiro inicial baseado no animal sorteado
+      const initialBarn: Barn = {
+        id: barnTypeToUnlock,
+        type: barnTypeToUnlock,
+        name: barnTypes[barnTypeToUnlock]?.name || 'Barn',
+        capacity: 10,
+        capacityLevel: 1,
+        efficiencyLevel: 0,
+        efficiencyBonus: 0,
+        animals: [newAnimal],
+        unlocked: true
+      };
+
+      // Determinar moedas iniciais baseado na raridade do animal
+      let initialCoins = 50; // padrão
+      switch (selectedAnimal) {
+        case 'dragon':
+          initialCoins = 10000; // Muito rico!
+          break;
+        case 'cow':
+          initialCoins = 500; // Rico
+          break;
+        case 'pig':
+          initialCoins = 200; // Médio
+          break;
+        case 'chicken':
+        default:
+          initialCoins = 50; // Básico
+          break;
+      }
 
       const newState = {
         ...prev,
-        coins: 50,
-        barns: updatedBarns,
+        coins: initialCoins,
+        barns: [initialBarn],
         isFirstTime: false,
-        coinsPerSecond: calculateCoinsPerSecond(updatedBarns)
+        coinsPerSecond: calculateCoinsPerSecond([initialBarn])
       };
 
       saveGame(newState);

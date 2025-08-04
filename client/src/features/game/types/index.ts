@@ -30,6 +30,16 @@ export interface AnimalType {
   baseCost: number;
   baseCoinsPerSecond: number;
   barnType: string;
+  icon: string;
+}
+
+export interface BarnType {
+  id: string;
+  type: string;
+  name: string;
+  baseCost: number;
+  unlocked: boolean;
+  icon: string;
 }
 
 export interface GameState {
